@@ -53,6 +53,7 @@ export function formatTime(iso: string): string {
  * Get initials from a full name (up to 2 chars)
  */
 export function getInitials(name: string): string {
+  if (!name) return "?"
   return name
     .split(" ")
     .slice(0, 2)

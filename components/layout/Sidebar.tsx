@@ -61,7 +61,7 @@ export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
     {
       label: "My Profile",
       onClick: () => {
-        window.open("https://employee.globalxtreme-technologies.net/profile", "_blank");
+        window.open(process.env.NEXT_PUBLIC_EMPLOYEE_PROFILE, "_blank");
       },
     },
     {
