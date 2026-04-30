@@ -1,36 +1,164 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Daily Report — Frontend Dashboard
 
-## Getting Started
+Dashboard internal untuk melihat laporan harian tim, dibangun dengan **Next.js 15 (App Router)** + **TypeScript**.
 
-First, run the development server:
+---
+
+## Tech Stack
+
+| Layer | Library |
+|---|---|
+| Framework | Next.js 15 (App Router) |
+| Bahasa | TypeScript (strict) |
+| Styling | SCSS Modules |
+| HTTP Client | Axios |
+| State Management | Zustand |
+| UI Primitives | Select / Dialog / Dropdown (custom, no Tailwind) |
+
+---
+
+## Prasyarat
+
+- Node.js **≥ 18**
+- npm **≥ 9**
+- Backend Go berjalan di `http://localhost:8080`
+
+---
+
+## Setup
+
+### 1. Clone & Install
+
+```bash
+git clone <repo-url>
+cd daily-report-fe
+npm install
+```
+
+### 2. Konfigurasi Environment
+
+Buat file `.env.local` di root project (sudah tersedia):
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8080/api/v1
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+Sesuaikan URL jika backend berjalan di port/host yang berbeda.
+
+### 3. Jalankan Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka [http://localhost:3000](http://localhost:3000) — otomatis redirect ke `/dashboard`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4. Build untuk Production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Alur Autentikasi
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+Browser buka /dashboard
+  └─► middleware.ts cek cookie auth_token
+        ├─► Ada token   → lanjut ke dashboard
+        └─► Tidak ada   → redirect ke /api/v1/auth/redirect (BE)
+                              └─► OAuth GX → BE callback
+                                    └─► Set cookie auth_token
+                                          └─► Redirect ke /auth/callback
+                                                └─► Redirect ke /dashboard
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Cookie `auth_token` di-set oleh backend. Frontend hanya membacanya dan menyertakannya di setiap request sebagai `Authorization: Bearer <token>`.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Struktur Folder
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+daily-report-fe/
+├── app/
+│   ├── layout.tsx                # Root layout + import globals.scss
+│   ├── page.tsx                  # Redirect ke /dashboard
+│   ├── auth/callback/page.tsx    # Landing setelah OAuth selesai
+│   └── dashboard/
+│       ├── page.tsx              # Halaman utama dashboard
+│       └── page.module.scss
+│
+├── components/
+│   ├── layout/
+│   │   ├── Sidebar.tsx / .module.scss
+│   │   └── Topbar.tsx / .module.scss
+│   ├── report/
+│   │   ├── ReportList.tsx / .module.scss
+│   │   ├── ReportCard.tsx / .module.scss
+│   │   ├── ReportDetail.tsx / .module.scss
+│   │   └── ReportGroup.tsx / .module.scss
+│   └── ui/
+│       ├── Select.tsx / .module.scss
+│       ├── Dialog.tsx / .module.scss
+│       └── Dropdown.tsx / .module.scss
+│
+├── hooks/
+│   └── useReports.ts             # Fetch + filter reports
+│
+├── lib/
+│   ├── api.ts                    # Axios instance dengan auth interceptor
+│   ├── auth.ts                   # Helper logout, redirect, cek token
+│   └── utils.ts                  # Format tanggal, getInitials, truncate, dll
+│
+├── store/
+│   └── authStore.ts              # Zustand: data user login
+│
+├── styles/
+│   └── globals.scss              # CSS Variables, reset, scrollbar
+│
+├── types/
+│   └── index.ts                  # Semua TypeScript interfaces & types
+│
+└── middleware.ts                 # Auth guard — redirect jika tidak ada token
+```
+
+---
+
+## Fitur
+
+### Dashboard
+- **All Reports** — list semua report, sort ASC/DESC, pagination
+- **By User** — dikelompokkan per user dalam rentang tanggal
+- **By Date** — dikelompokkan per tanggal dalam rentang tanggal
+
+### Topbar
+- Filter **date range** (from / to)
+- Dropdown **sort** (Newest / Oldest) — disembunyikan di view *By Date*
+- Tombol **Export .docx** — men-download file DOCX aktif
+
+### Sidebar
+- Navigasi 3 view
+- Avatar inisial user login dengan dropdown:
+  - **My Profile** → buka halaman employee GX di tab baru
+  - **Logout** → hapus token + redirect ke login
+
+### Detail Report (Modal)
+- Muncul saat card diklik
+- Menampilkan 5 pertanyaan standar Slack beserta jawaban lengkap
+- Newline pada jawaban dipertahankan (`white-space: pre-wrap`)
+- Blocker kosong / "-" → ditampilkan sebagai *"No blockers"* (muted italic)
+
+---
+
+## Perintah yang Tersedia
+
+| Perintah | Keterangan |
+|---|---|
+| `npm run dev` | Development server (hot reload) |
+| `npm run build` | Build production |
+| `npm start` | Jalankan build production |
+| `npm run lint` | ESLint check |

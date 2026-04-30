@@ -1,0 +1,97 @@
+/**
+ * Format ISO date string to "Tue, 29 Apr 2026, 09:15"
+ */
+export function formatDateTime(iso: string): string {
+  const date = new Date(iso);
+  return date.toLocaleString("en-GB", {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+}
+
+/**
+ * Format "YYYY-MM-DD" to "Tuesday, 29 April 2026"
+ */
+export function formatDateLong(dateStr: string): string {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
+  return date.toLocaleDateString("en-GB", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+/**
+ * Format "YYYY-MM-DD" to "29 Apr 2026"
+ */
+export function formatDateShort(dateStr: string): string {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
+  return date.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+/**
+ * Format time portion of an ISO string to "09:15"
+ */
+export function formatTime(iso: string): string {
+  const date = new Date(iso);
+  return date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false });
+}
+
+/**
+ * Get initials from a full name (up to 2 chars)
+ */
+export function getInitials(name: string): string {
+  return name
+    .split(" ")
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? "")
+    .join("");
+}
+
+/**
+ * Today's date as "YYYY-MM-DD"
+ */
+export function todayString(): string {
+  const d = new Date();
+  return d.toISOString().slice(0, 10);
+}
+
+/**
+ * N days ago as "YYYY-MM-DD"
+ */
+export function daysAgoString(n: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() - n);
+  return d.toISOString().slice(0, 10);
+}
+
+/**
+ * Truncate text to maxLen chars, appending "…"
+ */
+export function truncate(text: string, maxLen: number): string {
+  if (!text) return "";
+  const firstLine = text.split("\n")[0].trim();
+  if (firstLine.length <= maxLen) return firstLine;
+  return firstLine.slice(0, maxLen) + "…";
+}
+
+/**
+ * Returns true if blocker value should be treated as empty
+ */
+export function isEmptyBlocker(value: string): boolean {
+  if (!value) return true;
+  const trimmed = value.trim();
+  return trimmed === "" || trimmed === "-" || trimmed.toLowerCase() === "none";
+}
