@@ -1,3 +1,6 @@
+import SlackMarkdown from "slack-markdown";
+import DOMPurify from "dompurify";
+
 /**
  * Format date string to "Tue, 29 Apr 2026, 09:15"
  */
@@ -94,6 +97,20 @@ export function truncate(text: string, maxLen: number): string {
   const firstLine = text.split("\n")[0].trim();
   if (firstLine.length <= maxLen) return firstLine;
   return firstLine.slice(0, maxLen) + "…";
+}
+
+/**
+ * Truncate text to maxLen chars, appending "…"
+ */
+export function truncateSlack(text: string, maxLen: number): string {
+  if (!text) return "";
+  const firstLine = text.split("\n")[0].trim();
+  if (firstLine.length <= maxLen) return firstLine;
+
+  const finalCut = firstLine.slice(0, maxLen) + "…";
+
+  const parseAnswer = SlackMarkdown.toHTML(finalCut);
+  return  DOMPurify.sanitize(parseAnswer);
 }
 
 /**

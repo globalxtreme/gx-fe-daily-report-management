@@ -1,7 +1,7 @@
 "use client";
 
 import { Report } from "@/types";
-import { formatDateTime, formatTime, getInitials, truncate } from "@/lib/utils";
+import {formatDateTime, formatTime, getInitials, truncateSlack} from "@/lib/utils";
 import styles from "./ReportCard.module.scss";
 
 interface ReportCardProps {
@@ -22,7 +22,7 @@ export default function ReportCard({ report, hideDate = false, onClick }: Report
             <span className={styles.name}>{report.user.name}</span>
             <span className={styles.mood}>{report.mood}</span>
           </div>
-          <p className={styles.preview}>{truncate(report.completedYesterday, 80)}</p>
+          <div className={styles.preview} dangerouslySetInnerHTML={{__html: truncateSlack(report.completedYesterday, 80)}} />
         </div>
       </div>
 
