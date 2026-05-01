@@ -41,7 +41,7 @@ export default function ReportDetail({report, onClose}: ReportDetailProps) {
                 <div className={styles.avatar}>{getInitials(report.user.name)}</div>
                 <div>
                     <p className={styles.userName}>{report.user.name}</p>
-                    <p className={styles.dateTime}>{formatDateTime(report.createdAt)}</p>
+                    <p className={styles.dateTime}>{formatDateTime(report.completedAt)}</p>
                 </div>
                 <span className={styles.mood}>{report.mood}</span>
             </div>

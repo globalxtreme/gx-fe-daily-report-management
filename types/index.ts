@@ -23,6 +23,7 @@ export interface Report {
   blockers: string;
   mood: string;
   createdAt: string;
+  completedAt: string;
 }
 
 export interface ReportsByUser {

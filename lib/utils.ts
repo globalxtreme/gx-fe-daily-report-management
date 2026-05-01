@@ -1,8 +1,12 @@
 /**
- * Format ISO date string to "Tue, 29 Apr 2026, 09:15"
+ * Format date string to "Tue, 29 Apr 2026, 09:15"
  */
-export function formatDateTime(iso: string): string {
-  const date = new Date(iso);
+export function formatDateTime(dateStr: string): string {
+  const [datePart, timePart] = dateStr.split(" ");
+  const [year, month, day] = datePart.split("-").map(Number);
+  const [hour, minute, second] = timePart.split(":").map(Number);
+
+  const date = new Date(year, month - 1, day, hour, minute, second);
   return date.toLocaleString("en-GB", {
     weekday: "short",
     day: "2-digit",
@@ -42,10 +46,14 @@ export function formatDateShort(dateStr: string): string {
 }
 
 /**
- * Format time portion of an ISO string to "09:15"
+ * Format time portion of an date string to "09:15"
  */
-export function formatTime(iso: string): string {
-  const date = new Date(iso);
+export function formatTime(dateStr: string): string {
+  const [datePart, timePart] = dateStr.split(" ");
+  const [year, month, day] = datePart.split("-").map(Number);
+  const [hour, minute, second] = timePart.split(":").map(Number);
+
+  const date = new Date(year, month - 1, day, hour, minute, second);
   return date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false });
 }
 

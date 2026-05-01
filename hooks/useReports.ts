@@ -60,7 +60,7 @@ export function useReports(view: ViewMode, filters: ReportFilters): UseReportsRe
             params: {
               fromDate: filters.fromDate,
               toDate: filters.toDate,
-              sortBy: "createdAt",
+              sortBy: "completedAt",
               sort: filters.sort,
               page: filters.page,
               limit: filters.limit,

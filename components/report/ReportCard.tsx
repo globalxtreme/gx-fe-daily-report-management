@@ -28,7 +28,7 @@ export default function ReportCard({ report, hideDate = false, onClick }: Report
 
       <div className={styles.right}>
         <span className={styles.date}>
-          {hideDate ? formatTime(report.createdAt) : formatDateTime(report.createdAt)}
+          {hideDate ? formatTime(report.completedAt) : formatDateTime(report.completedAt)}
         </span>
         <svg
           className={styles.chevron}
