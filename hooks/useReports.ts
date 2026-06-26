@@ -9,13 +9,14 @@ import {
   ListResponse,
   ViewMode,
   ReportFilters,
+  NewListResponse,
 } from "@/types";
 
 interface UseReportsReturn {
   reports: Report[];
   reportsByUser: ReportsByUser[];
   reportsByDate: ReportsByDate[];
-  meta: { page: number; limit: number; total: number } | null;
+  meta: { currentPage: number; perPage: number; total: number } | null;
   loading: boolean;
   error: string | null;
   refetch: () => void;
@@ -25,7 +26,7 @@ export function useReports(view: ViewMode, filters: ReportFilters): UseReportsRe
   const [reports, setReports] = useState<Report[]>([]);
   const [reportsByUser, setReportsByUser] = useState<ReportsByUser[]>([]);
   const [reportsByDate, setReportsByDate] = useState<ReportsByDate[]>([]);
-  const [meta, setMeta] = useState<{ page: number; limit: number; total: number } | null>(null);
+  const [meta, setMeta] = useState<{ currentPage: number; perPage: number; total: number } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [tick, setTick] = useState(0);
@@ -42,7 +43,7 @@ export function useReports(view: ViewMode, filters: ReportFilters): UseReportsRe
     const fetch = async () => {
       try {
         if (view === "all") {
-          const res = await api.get<ListResponse<Report>>("/reports", {
+          const res = await api.get<NewListResponse<Report>>("/daily-reports", {
             params: {
               sort: filters.sort,
               page: filters.page,
@@ -50,13 +51,13 @@ export function useReports(view: ViewMode, filters: ReportFilters): UseReportsRe
             },
           });
           if (!cancelled) {
-            setReports(res.data.data);
+            setReports(res.data.result);
             setReportsByUser([]);
             setReportsByDate([]);
-            setMeta(res.data.meta);
+            setMeta(res.data.pagination);
           }
         } else if (view === "by-user") {
-          const res = await api.get<ListResponse<ReportsByUser>>("/reports/by-user", {
+          const res = await api.get<NewListResponse<ReportsByUser>>("/reports/by-user", {
             params: {
               fromDate: filters.fromDate,
               toDate: filters.toDate,
@@ -68,12 +69,12 @@ export function useReports(view: ViewMode, filters: ReportFilters): UseReportsRe
           });
           if (!cancelled) {
             setReports([]);
-            setReportsByUser(res.data.data);
+            setReportsByUser(res.data.result);
             setReportsByDate([]);
-            setMeta(res.data.meta);
+            setMeta(res.data.pagination);
           }
         } else {
-          const res = await api.get<ListResponse<ReportsByDate>>("/reports/by-date", {
+          const res = await api.get<NewListResponse<ReportsByDate>>("/reports/by-date", {
             params: {
               fromDate: filters.fromDate,
               toDate: filters.toDate,
@@ -84,8 +85,8 @@ export function useReports(view: ViewMode, filters: ReportFilters): UseReportsRe
           if (!cancelled) {
             setReports([]);
             setReportsByUser([]);
-            setReportsByDate(res.data.data);
-            setMeta(res.data.meta);
+            setReportsByDate(res.data.result);
+            setMeta(res.data.pagination);
           }
         }
       } catch (err: unknown) {

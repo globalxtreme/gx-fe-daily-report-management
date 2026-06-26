@@ -1,21 +1,24 @@
 "use client";
 
-import { Report, ReportsByUser, ReportsByDate, ViewMode } from "@/types";
+import { Report, ReportsByUser, ReportsByDate, ViewMode, NewReport } from "@/types";
 import { formatDateLong } from "@/lib/utils";
 import ReportCard from "./ReportCard";
 import ReportGroup from "./ReportGroup";
 import styles from "./ReportList.module.scss";
+import { CiEdit } from "react-icons/ci";
+import { useState } from "react";
+import ReportUpdateModal from "./ReportUpdateModal";
 
 interface ReportListProps {
   view: ViewMode;
-  reports: Report[];
+  reports: NewReport[];
   reportsByUser: ReportsByUser[];
   reportsByDate: ReportsByDate[];
-  meta: { page: number; limit: number; total: number } | null;
+  meta: { currentPage: number; perPage: number; total: number } | null;
   loading: boolean;
   error: string | null;
-  onCardClick: (report: Report) => void;
-  onPageChange: (page: number) => void;
+  onCardClick: (report: NewReport) => void;
+  onPageChange: (perPage: number) => void;
 }
 
 function EmptyState() {
@@ -70,11 +73,24 @@ export default function ReportList({
 
   if (isEmpty) return <EmptyState />;
 
-  const totalPages = meta ? Math.ceil(meta.total / meta.limit) : 1;
-  const currentPage = meta?.page ?? 1;
+  const totalPages = meta ? Math.ceil(meta.total / meta.perPage) : 1;
+  const currentPage = meta?.currentPage ?? 1;
+  const [openUpdate, setOpenUpdate] = useState(false)
 
   return (
     <div className={styles.wrapper}>
+      <button className={styles.editReportBtn} onClick={() => setOpenUpdate(true)}>
+        <CiEdit size={20}/>
+        Update Report
+      </button>
+      <ReportUpdateModal
+      open={openUpdate}
+      onClose={() => setOpenUpdate(false)}
+      onSubmit={(data) => {
+        console.log(data);
+        setOpenUpdate(false);
+      }}
+      />
       {/* ── All Reports ── */}
       {view === "all" && (
         <div className={styles.list}>
@@ -85,7 +101,7 @@ export default function ReportList({
       )}
 
       {/* ── By User ── */}
-      {view === "by-user" &&
+      {/* {view === "by-user" &&
         reportsByUser.map((group) => (
           <ReportGroup
             key={group.user.id}
@@ -96,10 +112,10 @@ export default function ReportList({
               <ReportCard key={r.id} report={r} onClick={onCardClick} />
             ))}
           </ReportGroup>
-        ))}
+        ))} */}
 
       {/* ── By Date ── */}
-      {view === "by-date" &&
+      {/* {view === "by-date" &&
         reportsByDate.map((group) => (
           <ReportGroup
             key={group.date}
@@ -110,7 +126,7 @@ export default function ReportList({
               <ReportCard key={r.id} report={r} hideDate onClick={onCardClick} />
             ))}
           </ReportGroup>
-        ))}
+        ))} */}
 
       {/* ── Pagination ── */}
       {totalPages > 1 && (

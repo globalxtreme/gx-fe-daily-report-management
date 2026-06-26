@@ -96,6 +96,14 @@
   flex-shrink: 0;
 }
 
+.middle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
+}
+
 .date {
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);

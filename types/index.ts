@@ -26,6 +26,26 @@ export interface Report {
   completedAt: string;
 }
 
+
+export interface NewEmployee {
+  id: number;
+  fullName: string;
+  email: string;
+  isActive: boolean;
+}
+export interface NewReport {
+  id: number;
+  employee: NewEmployee;
+  reportDate: string;
+  completedYesterday: string;
+  planToday: string;
+  finishEstimation: string;
+  blocker: string;
+  mood: string;
+  createdAt: string;
+  completedAt: string;
+}
+
 export interface ReportsByUser {
   user: User;
   reports: Report[];
@@ -57,4 +77,24 @@ export interface ReportFilters {
   sort: SortOrder;
   page: number;
   limit: number;
+}
+
+export interface NewStatusResponse {
+  code: number;
+  message: string;
+  internalMsg: string;
+}
+
+export interface NewPaginationMeta {
+  count: number;
+  currentPage: number;
+  perPage: number;
+  total: number;
+  totalPage: number;
+}
+export interface NewListResponse<T> {
+  status: NewStatusResponse;
+  result: T[];
+  pagination: NewPaginationMeta;
+
 }
