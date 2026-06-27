@@ -19,6 +19,7 @@ interface ReportListProps {
   error: string | null;
   onCardClick: (report: NewReport) => void;
   onPageChange: (perPage: number) => void;
+  refetch: () => void;
 }
 
 function EmptyState() {
@@ -54,6 +55,7 @@ export default function ReportList({
   error,
   onCardClick,
   onPageChange,
+  refetch,
 }: ReportListProps) {
   if (loading) return <SkeletonCards />;
 
@@ -75,22 +77,9 @@ export default function ReportList({
 
   const totalPages = meta ? Math.ceil(meta.total / meta.perPage) : 1;
   const currentPage = meta?.currentPage ?? 1;
-  const [openUpdate, setOpenUpdate] = useState(false)
 
   return (
     <div className={styles.wrapper}>
-      <button className={styles.editReportBtn} onClick={() => setOpenUpdate(true)}>
-        <CiEdit size={20}/>
-        Update Report
-      </button>
-      <ReportUpdateModal
-      open={openUpdate}
-      onClose={() => setOpenUpdate(false)}
-      onSubmit={(data) => {
-        console.log(data);
-        setOpenUpdate(false);
-      }}
-      />
       {/* ── All Reports ── */}
       {view === "all" && (
         <div className={styles.list}>

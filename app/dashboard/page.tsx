@@ -13,9 +13,12 @@ import Topbar from "@/components/layout/Topbar";
 import ReportList from "@/components/report/ReportList";
 import ReportDetail from "@/components/report/ReportDetail";
 import styles from "./page.module.scss";
+import { CiEdit } from "react-icons/ci";
+import ReportUpdateModal from "@/components/report/ReportUpdateModal";
 
 export default function DashboardPage() {
   const router = useRouter();
+  const [openUpdate, setOpenUpdate] = useState(false);
   const { user, setUser } = useAuthStore();
   const [view, setView] = useState<ViewMode>("all");
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
@@ -44,7 +47,7 @@ export default function DashboardPage() {
     }
   }, [user, setUser, router]);
 
-  const { reports, reportsByUser, reportsByDate, meta, loading, error } = useReports(
+  const { reports, reportsByUser, reportsByDate, meta, loading, error, refetch } = useReports(
     view,
     filters
   );
@@ -96,6 +99,13 @@ export default function DashboardPage() {
           onExport={handleExport}
         />
         <div className={styles.content}>
+          <button
+            className={styles.editReportBtn}
+            onClick={() => setOpenUpdate(true)}
+          >
+            <CiEdit size={20} />
+            Update Report
+          </button>
           <ReportList
             view={view}
             reports={reports}
@@ -106,9 +116,17 @@ export default function DashboardPage() {
             error={error}
             onCardClick={setSelectedReport}
             onPageChange={handlePageChange}
+            refetch={refetch}
           />
         </div>
       </div>
+      <ReportUpdateModal
+          open={openUpdate}
+          onClose={() => setOpenUpdate(false)}
+          onSubmit={() => {
+            refetch();
+          }}
+        />
       {selectedReport && (
         <ReportDetail report={selectedReport} onClose={() => setSelectedReport(null)} />
       )}
