@@ -34,6 +34,14 @@ export default function ReportUpdateModal({
   updateReport,
 } = useReportForm();
 
+  const isFormValid =
+  form.completedYesterday.trim() !== "" &&
+  form.planToday.trim() !== "" &&
+  form.finishEstimation.trim() !== "" &&
+  form.blocker.trim() !== "" &&
+  form.mood.trim() !== "";
+
+
   useEffect(() => {
     if (!open) return;
 
@@ -75,9 +83,10 @@ export default function ReportUpdateModal({
           {reportExists &&(
             <>
             <div className={styles.field}>
-              <label>What did you do yesterday?</label>
+              <label>What did you do yesterday?<span className={styles.required}>*</span></label>
 
               <textarea
+                required
                 rows={4}
                 value={form.completedYesterday}
                 onChange={(e) =>
@@ -87,9 +96,10 @@ export default function ReportUpdateModal({
             </div>
 
             <div className={styles.field}>
-              <label>What will you work on today?</label>
+              <label>What will you work on today?<span className={styles.required}>*</span></label>
 
               <textarea
+                required
                 rows={4}
                 value={form.planToday}
                 onChange={(e) =>
@@ -99,8 +109,9 @@ export default function ReportUpdateModal({
             </div>
 
             <div className={styles.field}>
-              <label>When do you expect to finish?</label>
+              <label>When do you expect to finish?<span className={styles.required}>*</span></label>
               <input
+                required
                 value={form.finishEstimation}
                 onChange={(e) =>
                   updateField("finishEstimation", e.target.value)
@@ -109,9 +120,10 @@ export default function ReportUpdateModal({
             </div>
 
             <div className={styles.field}>
-              <label>Any blockers or impediments?</label>
+              <label>Any blockers or impediments?<span className={styles.required}>*</span></label>
 
               <textarea
+                required
                 rows={3}
                 value={form.blocker}
                 onChange={(e) =>
@@ -121,8 +133,9 @@ export default function ReportUpdateModal({
             </div>
 
             <div className={styles.field}>
-              <label>How are you feeling today?</label>
+              <label>How are you feeling today?<span className={styles.required}>*</span></label>
               <input
+                required
                 value={form.mood}
                 onChange={(e) =>
                   updateField("mood", e.target.value)
@@ -143,7 +156,7 @@ export default function ReportUpdateModal({
 
           <button
             className={styles.saveBtn}
-            disabled={!reportExists || saving}
+            disabled={!reportExists || saving || !isFormValid}
             onClick={async () => {
               try {
                 const updated = await updateReport();

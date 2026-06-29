@@ -1,14 +1,14 @@
 "use client";
 
-import {Report, NewReport} from "@/types";
-import {formatDateSlash, formatDateTime, formatDateTimeSlash, getInitials, isEmptyBlocker} from "@/lib/utils";
+import {Report} from "@/types";
+import {formatDateSlash, formatDateTimeSlash, getInitials, isEmptyBlocker} from "@/lib/utils";
 import Dialog from "@/components/ui/Dialog";
 import styles from "./ReportDetail.module.scss";
 import SlackMarkdown from "slack-markdown";
 import DOMPurify from "dompurify";
 
 interface ReportDetailProps {
-    report: NewReport;
+    report: Report;
     onClose: () => void;
 }
 
@@ -42,7 +42,7 @@ export default function ReportDetail({report, onClose}: ReportDetailProps) {
                 <div>
                     <p className={styles.userName}>{report.employee.fullName}</p>
                     <p className={styles.dateTime}>Report for : {formatDateSlash(report.reportDate)}</p>
-                    <p className={styles.dateTime}>Completed at : {formatDateTimeSlash(report.completedAt)}</p>
+                    <p className={styles.dateTime}>{report.completedAt === "01/01/0001 00:00" ? "Not completed yet" : `Completed at: ${formatDateTimeSlash(report.completedAt)}`}</p>
                 </div>
                 <span className={styles.mood}>{report.mood}</span>
             </div>

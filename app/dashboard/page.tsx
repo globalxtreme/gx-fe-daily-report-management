@@ -47,7 +47,7 @@ export default function DashboardPage() {
     }
   }, [user, setUser, router]);
 
-  const { reports, reportsByUser, reportsByDate, meta, loading, error, refetch } = useReports(
+  const { reports, reportsByEmployee, reportsByDate, meta, loading, error, refetch } = useReports(
     view,
     filters
   );
@@ -109,7 +109,7 @@ export default function DashboardPage() {
           <ReportList
             view={view}
             reports={reports}
-            reportsByUser={reportsByUser}
+            reportsByEmployee={reportsByEmployee}
             reportsByDate={reportsByDate}
             meta={meta}
             loading={loading}

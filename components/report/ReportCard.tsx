@@ -1,13 +1,13 @@
 "use client";
 
-import { NewReport, Report } from "@/types";
-import {formatDateSlash, formatDateTime, formatDateTimeSlash, formatTime, getInitials, truncateSlack} from "@/lib/utils";
+import { Report } from "@/types";
+import {formatDateSlash, formatDateTimeSlash, formatTime, formatTimeSlash, getInitials, truncateSlack} from "@/lib/utils";
 import styles from "./ReportCard.module.scss";
 
 interface ReportCardProps {
-  report: NewReport;
+  report: Report;
   hideDate?: boolean; // true on "by-date" view (date shown in group header)
-  onClick: (report: NewReport) => void;
+  onClick: (report: Report) => void;
 }
 
 export default function ReportCard({ report, hideDate = false, onClick }: ReportCardProps) {
@@ -29,7 +29,14 @@ export default function ReportCard({ report, hideDate = false, onClick }: Report
         <p className={styles.date}>Report for : {formatDateSlash(report.reportDate)}</p>
       </div>
       <div className={styles.right}>
-        <p className={styles.date}>Complated at : {hideDate ? formatTime(report.completedAt) : formatDateTimeSlash(report.completedAt)}</p>
+        <p className={styles.date}>{report.completedAt === "01/01/0001 00:00"
+          ? "Not completed yet"
+          : `Completed at: ${
+              hideDate
+                ? formatTimeSlash(report.completedAt)
+                : formatDateTimeSlash(report.completedAt)
+            }`}
+          </p>
         <svg
           className={styles.chevron}
           width="14"

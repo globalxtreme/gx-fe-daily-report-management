@@ -93,6 +93,21 @@ export function formatTime(dateStr: string): string {
   return date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false });
 }
 
+export function formatTimeSlash(dateStr: string): string {
+  const [datePart, timePart] = dateStr.split(" ");
+  const [day, month, year] = datePart.split("/").map(Number);
+  const [hour, minute] = timePart.split(":").map(Number);
+
+  const date = new Date(year, month - 1, day, hour, minute);
+
+  return date.toLocaleTimeString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+}
+
+
 /**
  * Get initials from a full name (up to 2 chars)
  */

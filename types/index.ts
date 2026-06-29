@@ -13,29 +13,15 @@ export interface AuthUser {
   departmentName: string;
 }
 
-export interface Report {
-  id: number;
-  user: User;
-  reportDate: string;
-  completedYesterday: string;
-  planToday: string;
-  finishEstimation: string;
-  blockers: string;
-  mood: string;
-  createdAt: string;
-  completedAt: string;
-}
-
-
-export interface NewEmployee {
+export interface Employee {
   id: number;
   fullName: string;
   email: string;
   isActive: boolean;
 }
-export interface NewReport {
+export interface Report {
   id: number;
-  employee: NewEmployee;
+  employee: Employee;
   reportDate: string;
   completedYesterday: string;
   planToday: string;
@@ -46,25 +32,19 @@ export interface NewReport {
   completedAt: string;
 }
 
-export interface ReportsByUser {
-  user: User;
-  reports: Report[];
+export interface ReportsByEmployee {
+  employee: Employee;
+  employeeId: string;
+  count: number
+  dailyReports: Report[];
+  pagination: PaginationMeta;
 }
 
 export interface ReportsByDate {
   date: string;
-  reports: Report[];
-}
-
-export interface PaginationMeta {
-  page: number;
-  limit: number;
-  total: number;
-}
-
-export interface ListResponse<T> {
-  data: T[];
-  meta: PaginationMeta;
+  count: number
+  dailyReports: Report[];
+  pagination: PaginationMeta;
 }
 
 export type ViewMode = "all" | "by-user" | "by-date";
@@ -79,22 +59,22 @@ export interface ReportFilters {
   limit: number;
 }
 
-export interface NewStatusResponse {
+export interface StatusResponse {
   code: number;
   message: string;
   internalMsg: string;
 }
 
-export interface NewPaginationMeta {
+export interface PaginationMeta {
   count: number;
   currentPage: number;
   perPage: number;
   total: number;
   totalPage: number;
 }
-export interface NewListResponse<T> {
-  status: NewStatusResponse;
+export interface ListResponse<T> {
+  status: StatusResponse;
   result: T[];
-  pagination: NewPaginationMeta;
+  pagination: PaginationMeta;
 
 }

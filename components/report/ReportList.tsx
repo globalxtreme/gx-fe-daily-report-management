@@ -1,23 +1,20 @@
 "use client";
 
-import { Report, ReportsByUser, ReportsByDate, ViewMode, NewReport } from "@/types";
-import { formatDateLong } from "@/lib/utils";
+import { Report, ReportsByEmployee, ReportsByDate, ViewMode } from "@/types";
 import ReportCard from "./ReportCard";
 import ReportGroup from "./ReportGroup";
 import styles from "./ReportList.module.scss";
-import { CiEdit } from "react-icons/ci";
-import { useState } from "react";
-import ReportUpdateModal from "./ReportUpdateModal";
+import { formatDateSlash } from "@/lib/utils";
 
 interface ReportListProps {
   view: ViewMode;
-  reports: NewReport[];
-  reportsByUser: ReportsByUser[];
+  reports: Report[];
+  reportsByEmployee: ReportsByEmployee[];
   reportsByDate: ReportsByDate[];
   meta: { currentPage: number; perPage: number; total: number } | null;
   loading: boolean;
   error: string | null;
-  onCardClick: (report: NewReport) => void;
+  onCardClick: (report: Report) => void;
   onPageChange: (perPage: number) => void;
   refetch: () => void;
 }
@@ -48,7 +45,7 @@ function SkeletonCards({ count = 5 }: { count?: number }) {
 export default function ReportList({
   view,
   reports,
-  reportsByUser,
+  reportsByEmployee,
   reportsByDate,
   meta,
   loading,
@@ -70,7 +67,7 @@ export default function ReportList({
 
   const isEmpty =
     (view === "all" && reports.length === 0) ||
-    (view === "by-user" && reportsByUser.length === 0) ||
+    (view === "by-user" && reportsByEmployee.length === 0) ||
     (view === "by-date" && reportsByDate.length === 0);
 
   if (isEmpty) return <EmptyState />;
@@ -90,32 +87,32 @@ export default function ReportList({
       )}
 
       {/* ── By User ── */}
-      {/* {view === "by-user" &&
-        reportsByUser.map((group) => (
+      {view === "by-user" &&
+        reportsByEmployee.map((group) => (
           <ReportGroup
-            key={group.user.id}
-            label={group.user.name}
-            count={group.reports.length}
+            key={group.employeeId}
+            label={group.employee.fullName}
+            count={group.count}
           >
-            {group.reports.map((r) => (
+            {group.dailyReports.map((r) => (
               <ReportCard key={r.id} report={r} onClick={onCardClick} />
             ))}
           </ReportGroup>
-        ))} */}
+        ))}
 
       {/* ── By Date ── */}
-      {/* {view === "by-date" &&
+      {view === "by-date" &&
         reportsByDate.map((group) => (
           <ReportGroup
             key={group.date}
-            label={formatDateLong(group.date)}
-            count={group.reports.length}
+            label={formatDateSlash(group.date)}
+            count={group.count}
           >
-            {group.reports.map((r) => (
+            {group.dailyReports.map((r) => (
               <ReportCard key={r.id} report={r} hideDate onClick={onCardClick} />
             ))}
           </ReportGroup>
-        ))} */}
+        ))}
 
       {/* ── Pagination ── */}
       {totalPages > 1 && (
