@@ -13,6 +13,22 @@ export interface AuthUser {
   departmentName: string;
 }
 
+export interface AuthEmployee {
+  status: StatusResponse;
+  result: EmployeeFull;
+}
+
+export interface EmployeeFull {
+  id: number;
+  fullName: string;
+  email: string;
+  isActive: boolean;
+  slackEmail: string;
+  slackId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Employee {
   id: number;
   fullName: string;
@@ -47,7 +63,7 @@ export interface ReportsByDate {
   pagination: PaginationMeta;
 }
 
-export type ViewMode = "all" | "by-user" | "by-date";
+export type ViewMode = "all" | "by-employee" | "by-date";
 
 export type SortOrder = "asc" | "desc";
 

@@ -67,7 +67,7 @@ export default function ReportList({
 
   const isEmpty =
     (view === "all" && reports.length === 0) ||
-    (view === "by-user" && reportsByEmployee.length === 0) ||
+    (view === "by-employee" && reportsByEmployee.length === 0) ||
     (view === "by-date" && reportsByDate.length === 0);
 
   if (isEmpty) return <EmptyState />;
@@ -87,7 +87,7 @@ export default function ReportList({
       )}
 
       {/* ── By User ── */}
-      {view === "by-user" &&
+      {view === "by-employee" &&
         reportsByEmployee.map((group) => (
           <ReportGroup
             key={group.employeeId}

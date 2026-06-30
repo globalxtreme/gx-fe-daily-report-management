@@ -6,7 +6,7 @@ import Cookies from "js-cookie";
 import api from "@/lib/api";
 import { useAuthStore } from "@/store/authStore";
 import { useReports } from "@/hooks/useReports";
-import { ViewMode, SortOrder, ReportFilters, Report, AuthUser } from "@/types";
+import { ViewMode, SortOrder, ReportFilters, Report, AuthUser, AuthEmployee } from "@/types";
 import { todayString, daysAgoString } from "@/lib/utils";
 import Sidebar from "@/components/layout/Sidebar";
 import Topbar from "@/components/layout/Topbar";
@@ -38,7 +38,7 @@ export default function DashboardPage() {
     }
     if (!user) {
       api
-        .get<AuthUser>("/auth/me")
+        .get<AuthEmployee>("/auth/me")
         .then((res) => setUser(res.data))
         .catch(() => {
           Cookies.remove("auth_token");
@@ -66,9 +66,9 @@ export default function DashboardPage() {
   }
 
   async function handleExport() {
-    const groupBy = view === "all" ? "none" : view === "by-user" ? "user" : "date";
+    const groupBy = view === "all" ? "none" : view === "by-employee" ? "employee" : "date";
     try {
-      const res = await api.get("/reports/export", {
+      const res = await api.get("/daily-reports/exports", {
         params: {
           groupBy,
           fromDate: filters.fromDate,

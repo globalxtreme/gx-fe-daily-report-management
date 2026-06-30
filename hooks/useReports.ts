@@ -57,7 +57,7 @@ export function useReports(view: ViewMode, filters: ReportFilters): UseReportsRe
             setReportsByDate([]);
             setMeta(res.data.pagination);
           }
-        } else if (view === "by-user") {
+        } else if (view === "by-employee") {
           const res = await api.get<ListResponse<ReportsByEmployee>>("/daily-reports/by-employees", {
             params: {
               fromDate: filters.fromDate,
