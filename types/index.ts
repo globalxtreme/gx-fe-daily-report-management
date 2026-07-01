@@ -94,3 +94,15 @@ export interface ListResponse<T> {
   pagination: PaginationMeta;
 
 }
+
+export interface SlackAccount {
+  id: string;
+  name: string;
+  email: string;
+  image: string;
+}
+
+
+export interface UpdateSlackAccountForm {
+  slackId : string
+}

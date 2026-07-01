@@ -1,12 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useAuthStore } from "@/store/authStore";
 import { logout } from "@/lib/auth";
 import { getInitials } from "@/lib/utils";
 import { ViewMode } from "@/types";
 import Dropdown from "@/components/ui/Dropdown";
 import styles from "./Sidebar.module.scss";
+import SlackAccountModal from "./SlackAccountModal";
 
 interface SidebarProps {
   activeView: ViewMode;
@@ -56,6 +58,7 @@ const NAV_ITEMS: { label: string; view: ViewMode; icon: React.ReactNode }[] = [
 export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
   const { user } = useAuthStore();
   const router = useRouter();
+  const [openSlackModal, setOpenSlackModal] = useState(false);
 
   const dropdownItems = [
     {
@@ -66,10 +69,10 @@ export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
     },
     {
       label: user?.result?.slackId
-        ? `Slack Linked (${user?.result?.slackId})`
+        ? `Slack Linked`
         : "Link to Slack",
       onClick: () => {
-        window.open(process.env.NEXT_PUBLIC_EMPLOYEE_PROFILE, "_blank");
+        setOpenSlackModal(true);
       },
     },
     {
@@ -103,6 +106,12 @@ export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
             align="right"
           />
         )}
+        <SlackAccountModal
+          open={openSlackModal}
+          onClose={() => setOpenSlackModal(false)}
+          slackId={user?.result?.slackId}
+          slackEmail={user?.result?.slackEmail}
+        />
       </div>
 
       <nav className={styles.nav}>
