@@ -78,9 +78,20 @@ export default function DashboardPage() {
         responseType: "blob",
       });
       const url = URL.createObjectURL(res.data as Blob);
+      const contentDisposition = res.headers["content-disposition"];
+
+      let filename = `daily-report-${todayString()}.docx`;
+
+      if (contentDisposition) {
+        const match = contentDisposition.match(/filename="?([^"]+)"?/);
+        if (match) {
+          filename = match[1];
+        }
+      }
+
       const a = document.createElement("a");
       a.href = url;
-      a.download = `daily-report-${todayString()}.docx`;
+      a.download = filename;
       a.click();
       URL.revokeObjectURL(url);
     } catch {

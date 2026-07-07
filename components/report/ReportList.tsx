@@ -66,9 +66,9 @@ export default function ReportList({
   }
 
   const isEmpty =
-    (view === "all" && reports.length === 0) ||
-    (view === "by-employee" && reportsByEmployee.length === 0) ||
-    (view === "by-date" && reportsByDate.length === 0);
+    (view === "all" &&  reports === null) ||
+    (view === "by-employee" && reportsByEmployee === null) ||
+    (view === "by-date" && reportsByDate === null);
 
   if (isEmpty) return <EmptyState />;
 
