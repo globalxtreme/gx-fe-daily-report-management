@@ -62,6 +62,12 @@ export function useReportForm() {
             return;
         }
 
+        if (report.id == 0) {
+            setReportExists(false);
+            reset(date);
+            return;
+        }
+
         setReportExists(true);
 
         setForm({
