@@ -33,16 +33,16 @@ export default function DashboardPage() {
   useEffect(() => {
     const token = Cookies.get("auth_token");
     if (!token) {
-      router.replace(`${process.env.NEXT_PUBLIC_API_URL}/auth/redirect`);
+      router.replace(`${process.env.NEXT_PUBLIC_API_URL}/oauth/redirect`);
       return;
     }
     if (!user) {
       api
-        .get<AuthEmployee>("/auth/me")
+        .get<AuthEmployee>("/oauth/me")
         .then((res) => setUser(res.data))
         .catch(() => {
           Cookies.remove("auth_token");
-          router.replace(`${process.env.NEXT_PUBLIC_API_URL}/auth/redirect`);
+          router.replace(`${process.env.NEXT_PUBLIC_API_URL}/oauth/redirect`);
         });
     }
   }, [user, setUser, router]);
@@ -68,7 +68,7 @@ export default function DashboardPage() {
   async function handleExport() {
     const groupBy = view === "all" ? "none" : view === "by-employee" ? "employee" : "date";
     try {
-      const res = await api.get("/daily-reports/exports", {
+      const res = await api.get("/daily-reports/export", {
         params: {
           groupBy,
           fromDate: filters.fromDate,

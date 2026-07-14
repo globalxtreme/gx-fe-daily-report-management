@@ -58,7 +58,7 @@ export function useReports(view: ViewMode, filters: ReportFilters): UseReportsRe
             setMeta(res.data.pagination);
           }
         } else if (view === "by-employee") {
-          const res = await api.get<ListResponse<ReportsByEmployee>>("/daily-reports/by-employees", {
+          const res = await api.get<ListResponse<ReportsByEmployee>>("/daily-reports/employees", {
             params: {
               fromDate: filters.fromDate,
               toDate: filters.toDate,
@@ -74,7 +74,7 @@ export function useReports(view: ViewMode, filters: ReportFilters): UseReportsRe
             setMeta(res.data.pagination);
           }
         } else {
-          const res = await api.get<ListResponse<ReportsByDate>>("/daily-reports/by-dates", {
+          const res = await api.get<ListResponse<ReportsByDate>>("/daily-reports/dates", {
             params: {
               fromDate: filters.fromDate,
               toDate: filters.toDate,

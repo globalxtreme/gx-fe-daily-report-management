@@ -52,7 +52,7 @@ export function useReportForm() {
     setLoading(true);
 
     try {
-      const res = await api.get(`/daily-reports/by-dates/${date}`);
+      const res = await api.get(`/daily-reports/employees/dates/${date}`);
 
       const report = res.data?.result;
 
