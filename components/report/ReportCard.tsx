@@ -3,6 +3,7 @@
 import { Report } from "@/types";
 import {formatDateSlash, formatDateTimeSlash, formatTime, formatTimeSlash, getInitials, truncateSlack} from "@/lib/utils";
 import styles from "./ReportCard.module.scss";
+import { emojify } from "node-emoji";
 
 interface ReportCardProps {
   report: Report;
@@ -20,7 +21,7 @@ export default function ReportCard({ report, hideDate = false, onClick }: Report
         <div className={styles.info}>
           <div className={styles.nameRow}>
             <span className={styles.name}>{report.employee.fullName}</span>
-            <span className={styles.mood}>{report.mood}</span>
+            <span className={styles.mood}>{emojify(report.mood)}</span>
           </div>
           <div className={styles.preview} dangerouslySetInnerHTML={{__html: truncateSlack(report.completedYesterday, 80)}} />
         </div>

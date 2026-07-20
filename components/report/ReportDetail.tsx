@@ -6,6 +6,7 @@ import Dialog from "@/components/ui/Dialog";
 import styles from "./ReportDetail.module.scss";
 import SlackMarkdown from "slack-markdown";
 import DOMPurify from "dompurify";
+import { emojify } from "node-emoji";
 
 interface ReportDetailProps {
     report: Report;
@@ -44,7 +45,7 @@ export default function ReportDetail({report, onClose}: ReportDetailProps) {
                     <p className={styles.dateTime}>Report for : {formatDateSlash(report.reportDate)}</p>
                     <p className={styles.dateTime}>{report.completedAt === "01/01/0001 00:00" ? "Not completed yet" : `Completed at: ${formatDateTimeSlash(report.completedAt)}`}</p>
                 </div>
-                <span className={styles.mood}>{report.mood}</span>
+                <span className={styles.mood}>{emojify(report.mood)}</span>
             </div>
 
             <div className={styles.divider}/>
@@ -70,7 +71,7 @@ export default function ReportDetail({report, onClose}: ReportDetailProps) {
                 />
                 <Field
                     question="How do you feel today?"
-                    answer={report.mood}
+                    answer={emojify(report.mood)}
                 />
             </div>
         </Dialog>

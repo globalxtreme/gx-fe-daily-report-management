@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./ReportUpdateModal.module.scss";
 import { useReportForm } from "@/hooks/useReportForms";
 import { toast } from "sonner";
+import { emojify } from "node-emoji";
 
 interface ReportUpdateModalProps {
   open: boolean;
@@ -136,7 +137,7 @@ export default function ReportUpdateModal({
               <label>How are you feeling today?<span className={styles.required}>*</span></label>
               <input
                 required
-                value={form.mood}
+                value={emojify(form.mood)}
                 onChange={(e) =>
                   updateField("mood", e.target.value)
                 }
