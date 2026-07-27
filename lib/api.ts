@@ -19,7 +19,7 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       Cookies.remove("auth_token");
-      window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/redirect`;
+      window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/oauth/redirect`;
     }
     return Promise.reject(error);
   }

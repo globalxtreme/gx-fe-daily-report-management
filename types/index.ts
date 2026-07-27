@@ -13,41 +13,57 @@ export interface AuthUser {
   departmentName: string;
 }
 
+export interface AuthEmployee {
+  status: StatusResponse;
+  result: EmployeeFull;
+}
+
+export interface EmployeeFull {
+  id: number;
+  fullName: string;
+  email: string;
+  isActive: boolean;
+  slackEmail: string;
+  slackId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Employee {
+  id: number;
+  fullName: string;
+  email: string;
+  isActive: boolean;
+}
 export interface Report {
   id: number;
-  user: User;
+  employee: Employee;
   reportDate: string;
   completedYesterday: string;
   planToday: string;
   finishEstimation: string;
-  blockers: string;
+  blocker: string;
   mood: string;
   createdAt: string;
   completedAt: string;
 }
 
-export interface ReportsByUser {
-  user: User;
-  reports: Report[];
+export interface ReportsByEmployee {
+  employee: Employee;
+  employeeId: string;
+  count: number
+  dailyReports: Report[];
+  pagination: PaginationMeta;
 }
 
 export interface ReportsByDate {
   date: string;
-  reports: Report[];
+  count: number
+  dailyReports: Report[];
+  pagination: PaginationMeta;
 }
 
-export interface PaginationMeta {
-  page: number;
-  limit: number;
-  total: number;
-}
-
-export interface ListResponse<T> {
-  data: T[];
-  meta: PaginationMeta;
-}
-
-export type ViewMode = "all" | "by-user" | "by-date";
+export type ViewMode = "all" | "by-employee" | "by-date";
 
 export type SortOrder = "asc" | "desc";
 
@@ -57,4 +73,36 @@ export interface ReportFilters {
   sort: SortOrder;
   page: number;
   limit: number;
+}
+
+export interface StatusResponse {
+  code: number;
+  message: string;
+  internalMsg: string;
+}
+
+export interface PaginationMeta {
+  count: number;
+  currentPage: number;
+  perPage: number;
+  total: number;
+  totalPage: number;
+}
+export interface ListResponse<T> {
+  status: StatusResponse;
+  result: T[];
+  pagination: PaginationMeta;
+
+}
+
+export interface SlackAccount {
+  id: string;
+  name: string;
+  email: string;
+  image: string;
+}
+
+
+export interface UpdateSlackAccountForm {
+  slackId : string
 }

@@ -1,8 +1,9 @@
 "use client";
 
 import { Report } from "@/types";
-import {formatDateTime, formatTime, getInitials, truncateSlack} from "@/lib/utils";
+import {formatDateSlash, formatDateTimeSlash, formatTime, formatTimeSlash, getInitials, truncateSlack} from "@/lib/utils";
 import styles from "./ReportCard.module.scss";
+import { emojify } from "node-emoji";
 
 interface ReportCardProps {
   report: Report;
@@ -15,21 +16,28 @@ export default function ReportCard({ report, hideDate = false, onClick }: Report
     <button className={styles.card} onClick={() => onClick(report)}>
       <div className={styles.left}>
         {/* Avatar */}
-        <div className={styles.avatar}>{getInitials(report.user.name)}</div>
+        <div className={styles.avatar}>{getInitials(report.employee.fullName)}</div>
 
         <div className={styles.info}>
           <div className={styles.nameRow}>
-            <span className={styles.name}>{report.user.name}</span>
-            <span className={styles.mood}>{report.mood}</span>
+            <span className={styles.name}>{report.employee.fullName}</span>
+            <span className={styles.mood}>{emojify(report.mood)}</span>
           </div>
           <div className={styles.preview} dangerouslySetInnerHTML={{__html: truncateSlack(report.completedYesterday, 80)}} />
         </div>
       </div>
-
+      <div className={styles.middle}>
+        <p className={styles.date}>Report for : {formatDateSlash(report.reportDate)}</p>
+      </div>
       <div className={styles.right}>
-        <span className={styles.date}>
-          {hideDate ? formatTime(report.completedAt) : formatDateTime(report.completedAt)}
-        </span>
+        <p className={styles.date}>{report.completedAt === "01/01/0001 00:00"
+          ? "Not completed yet"
+          : `Completed at: ${
+              hideDate
+                ? formatTimeSlash(report.completedAt)
+                : formatDateTimeSlash(report.completedAt)
+            }`}
+          </p>
         <svg
           className={styles.chevron}
           width="14"

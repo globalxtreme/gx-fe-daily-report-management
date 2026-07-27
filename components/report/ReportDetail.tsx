@@ -1,11 +1,12 @@
 "use client";
 
 import {Report} from "@/types";
-import {formatDateTime, getInitials, isEmptyBlocker} from "@/lib/utils";
+import {formatDateSlash, formatDateTimeSlash, getInitials, isEmptyBlocker} from "@/lib/utils";
 import Dialog from "@/components/ui/Dialog";
 import styles from "./ReportDetail.module.scss";
 import SlackMarkdown from "slack-markdown";
 import DOMPurify from "dompurify";
+import { emojify } from "node-emoji";
 
 interface ReportDetailProps {
     report: Report;
@@ -32,18 +33,19 @@ function Field({question, answer, muted}: FieldProps) {
 }
 
 export default function ReportDetail({report, onClose}: ReportDetailProps) {
-    const blockerEmpty = isEmptyBlocker(report.blockers);
+    const blockerEmpty = isEmptyBlocker(report.blocker);
 
     return (
         <Dialog open onClose={onClose} size="lg">
             {/* Header info */}
             <div className={styles.meta}>
-                <div className={styles.avatar}>{getInitials(report.user.name)}</div>
+                <div className={styles.avatar}>{getInitials(report.employee.fullName)}</div>
                 <div>
-                    <p className={styles.userName}>{report.user.name}</p>
-                    <p className={styles.dateTime}>{formatDateTime(report.completedAt)}</p>
+                    <p className={styles.userName}>{report.employee.fullName}</p>
+                    <p className={styles.dateTime}>Report for : {formatDateSlash(report.reportDate)}</p>
+                    <p className={styles.dateTime}>{report.completedAt === "01/01/0001 00:00" ? "Not completed yet" : `Completed at: ${formatDateTimeSlash(report.completedAt)}`}</p>
                 </div>
-                <span className={styles.mood}>{report.mood}</span>
+                <span className={styles.mood}>{emojify(report.mood)}</span>
             </div>
 
             <div className={styles.divider}/>
@@ -64,12 +66,12 @@ export default function ReportDetail({report, onClose}: ReportDetailProps) {
                 />
                 <Field
                     question="Anything blocking your progress?"
-                    answer={blockerEmpty ? "No blockers" : report.blockers}
+                    answer={blockerEmpty ? "No blockers" : report.blocker}
                     muted={blockerEmpty}
                 />
                 <Field
                     question="How do you feel today?"
-                    answer={report.mood}
+                    answer={emojify(report.mood)}
                 />
             </div>
         </Dialog>

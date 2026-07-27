@@ -21,6 +21,39 @@ export function formatDateTime(dateStr: string): string {
   });
 }
 
+
+export function formatDateTimeSlash(dateStr: string): string {
+  const [datePart, timePart] = dateStr.split(" ");
+  const [day, month, year] = datePart.split("/").map(Number);
+  const [hour, minute] = timePart.split(":").map(Number);
+
+  const date = new Date(year, month - 1, day, hour, minute);
+
+  return date
+    .toLocaleString("en-GB", {
+      weekday: "short",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+}
+
+export function formatDateSlash(dateStr: string): string {
+  const [day, month, year] = dateStr.split("/").map(Number);
+
+  const date = new Date(year, month - 1, day);
+
+  return date.toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
 /**
  * Format "YYYY-MM-DD" to "Tuesday, 29 April 2026"
  */
@@ -59,6 +92,21 @@ export function formatTime(dateStr: string): string {
   const date = new Date(year, month - 1, day, hour, minute, second);
   return date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false });
 }
+
+export function formatTimeSlash(dateStr: string): string {
+  const [datePart, timePart] = dateStr.split(" ");
+  const [day, month, year] = datePart.split("/").map(Number);
+  const [hour, minute] = timePart.split(":").map(Number);
+
+  const date = new Date(year, month - 1, day, hour, minute);
+
+  return date.toLocaleTimeString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+}
+
 
 /**
  * Get initials from a full name (up to 2 chars)

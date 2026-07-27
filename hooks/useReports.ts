@@ -4,18 +4,18 @@ import { useState, useEffect, useCallback } from "react";
 import api from "@/lib/api";
 import {
   Report,
-  ReportsByUser,
   ReportsByDate,
-  ListResponse,
   ViewMode,
   ReportFilters,
+  ListResponse,
+  ReportsByEmployee,
 } from "@/types";
 
 interface UseReportsReturn {
   reports: Report[];
-  reportsByUser: ReportsByUser[];
+  reportsByEmployee: ReportsByEmployee[];
   reportsByDate: ReportsByDate[];
-  meta: { page: number; limit: number; total: number } | null;
+  meta: { currentPage: number; perPage: number; total: number } | null;
   loading: boolean;
   error: string | null;
   refetch: () => void;
@@ -23,9 +23,9 @@ interface UseReportsReturn {
 
 export function useReports(view: ViewMode, filters: ReportFilters): UseReportsReturn {
   const [reports, setReports] = useState<Report[]>([]);
-  const [reportsByUser, setReportsByUser] = useState<ReportsByUser[]>([]);
+  const [reportsByEmployee, setReportsByEmployee] = useState<ReportsByEmployee[]>([]);
   const [reportsByDate, setReportsByDate] = useState<ReportsByDate[]>([]);
-  const [meta, setMeta] = useState<{ page: number; limit: number; total: number } | null>(null);
+  const [meta, setMeta] = useState<{ currentPage: number; perPage: number; total: number } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [tick, setTick] = useState(0);
@@ -42,25 +42,26 @@ export function useReports(view: ViewMode, filters: ReportFilters): UseReportsRe
     const fetch = async () => {
       try {
         if (view === "all") {
-          const res = await api.get<ListResponse<Report>>("/reports", {
+          const res = await api.get<ListResponse<Report>>("/daily-reports", {
             params: {
+              fromDate: filters.fromDate,
+              toDate: filters.toDate,
               sort: filters.sort,
               page: filters.page,
               limit: filters.limit,
             },
           });
           if (!cancelled) {
-            setReports(res.data.data);
-            setReportsByUser([]);
+            setReports(res.data.result);
+            setReportsByEmployee([]);
             setReportsByDate([]);
-            setMeta(res.data.meta);
+            setMeta(res.data.pagination);
           }
-        } else if (view === "by-user") {
-          const res = await api.get<ListResponse<ReportsByUser>>("/reports/by-user", {
+        } else if (view === "by-employee") {
+          const res = await api.get<ListResponse<ReportsByEmployee>>("/daily-reports/employees", {
             params: {
               fromDate: filters.fromDate,
               toDate: filters.toDate,
-              sortBy: "completedAt",
               sort: filters.sort,
               page: filters.page,
               limit: filters.limit,
@@ -68,12 +69,12 @@ export function useReports(view: ViewMode, filters: ReportFilters): UseReportsRe
           });
           if (!cancelled) {
             setReports([]);
-            setReportsByUser(res.data.data);
+            setReportsByEmployee(res.data.result);
             setReportsByDate([]);
-            setMeta(res.data.meta);
+            setMeta(res.data.pagination);
           }
         } else {
-          const res = await api.get<ListResponse<ReportsByDate>>("/reports/by-date", {
+          const res = await api.get<ListResponse<ReportsByDate>>("/daily-reports/dates", {
             params: {
               fromDate: filters.fromDate,
               toDate: filters.toDate,
@@ -83,9 +84,9 @@ export function useReports(view: ViewMode, filters: ReportFilters): UseReportsRe
           });
           if (!cancelled) {
             setReports([]);
-            setReportsByUser([]);
-            setReportsByDate(res.data.data);
-            setMeta(res.data.meta);
+            setReportsByEmployee([]);
+            setReportsByDate(res.data.result);
+            setMeta(res.data.pagination);
           }
         }
       } catch (err: unknown) {
@@ -105,5 +106,5 @@ export function useReports(view: ViewMode, filters: ReportFilters): UseReportsRe
     };
   }, [view, filters.fromDate, filters.toDate, filters.sort, filters.page, filters.limit, tick]);
 
-  return { reports, reportsByUser, reportsByDate, meta, loading, error, refetch };
+  return { reports, reportsByEmployee, reportsByDate, meta, loading, error, refetch };
 }
