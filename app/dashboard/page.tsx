@@ -6,16 +6,19 @@ import Cookies from "js-cookie";
 import api from "@/lib/api";
 import { useAuthStore } from "@/store/authStore";
 import { useReports } from "@/hooks/useReports";
-import { ViewMode, SortOrder, ReportFilters, Report, AuthUser } from "@/types";
+import { ViewMode, SortOrder, ReportFilters, Report, AuthUser, AuthEmployee } from "@/types";
 import { todayString, daysAgoString } from "@/lib/utils";
 import Sidebar from "@/components/layout/Sidebar";
 import Topbar from "@/components/layout/Topbar";
 import ReportList from "@/components/report/ReportList";
 import ReportDetail from "@/components/report/ReportDetail";
 import styles from "./page.module.scss";
+import { CiEdit } from "react-icons/ci";
+import ReportUpdateModal from "@/components/report/ReportUpdateModal";
 
 export default function DashboardPage() {
   const router = useRouter();
+  const [openUpdate, setOpenUpdate] = useState(false);
   const { user, setUser } = useAuthStore();
   const [view, setView] = useState<ViewMode>("all");
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
@@ -30,21 +33,21 @@ export default function DashboardPage() {
   useEffect(() => {
     const token = Cookies.get("auth_token");
     if (!token) {
-      router.replace(`${process.env.NEXT_PUBLIC_API_URL}/auth/redirect`);
+      router.replace(`${process.env.NEXT_PUBLIC_API_URL}/oauth/redirect`);
       return;
     }
     if (!user) {
       api
-        .get<AuthUser>("/auth/me")
+        .get<AuthEmployee>("/oauth/me")
         .then((res) => setUser(res.data))
         .catch(() => {
           Cookies.remove("auth_token");
-          router.replace(`${process.env.NEXT_PUBLIC_API_URL}/auth/redirect`);
+          router.replace(`${process.env.NEXT_PUBLIC_API_URL}/oauth/redirect`);
         });
     }
   }, [user, setUser, router]);
 
-  const { reports, reportsByUser, reportsByDate, meta, loading, error } = useReports(
+  const { reports, reportsByEmployee, reportsByDate, meta, loading, error, refetch } = useReports(
     view,
     filters
   );
@@ -63,9 +66,9 @@ export default function DashboardPage() {
   }
 
   async function handleExport() {
-    const groupBy = view === "all" ? "none" : view === "by-user" ? "user" : "date";
+    const groupBy = view === "all" ? "none" : view === "by-employee" ? "employee" : "date";
     try {
-      const res = await api.get("/reports/export", {
+      const res = await api.get("/daily-reports/export", {
         params: {
           groupBy,
           fromDate: filters.fromDate,
@@ -75,9 +78,20 @@ export default function DashboardPage() {
         responseType: "blob",
       });
       const url = URL.createObjectURL(res.data as Blob);
+      const contentDisposition = res.headers["content-disposition"];
+
+      let filename = `daily-report-${todayString()}.docx`;
+
+      if (contentDisposition) {
+        const match = contentDisposition.match(/filename="?([^"]+)"?/);
+        if (match) {
+          filename = match[1];
+        }
+      }
+
       const a = document.createElement("a");
       a.href = url;
-      a.download = `daily-report-${todayString()}.docx`;
+      a.download = filename;
       a.click();
       URL.revokeObjectURL(url);
     } catch {
@@ -96,19 +110,34 @@ export default function DashboardPage() {
           onExport={handleExport}
         />
         <div className={styles.content}>
+          <button
+            className={styles.editReportBtn}
+            onClick={() => setOpenUpdate(true)}
+          >
+            <CiEdit size={20} />
+            Update Report
+          </button>
           <ReportList
             view={view}
             reports={reports}
-            reportsByUser={reportsByUser}
+            reportsByEmployee={reportsByEmployee}
             reportsByDate={reportsByDate}
             meta={meta}
             loading={loading}
             error={error}
             onCardClick={setSelectedReport}
             onPageChange={handlePageChange}
+            refetch={refetch}
           />
         </div>
       </div>
+      <ReportUpdateModal
+          open={openUpdate}
+          onClose={() => setOpenUpdate(false)}
+          onSubmit={() => {
+            refetch();
+          }}
+        />
       {selectedReport && (
         <ReportDetail report={selectedReport} onClose={() => setSelectedReport(null)} />
       )}

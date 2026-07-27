@@ -1,12 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useAuthStore } from "@/store/authStore";
 import { logout } from "@/lib/auth";
 import { getInitials } from "@/lib/utils";
 import { ViewMode } from "@/types";
 import Dropdown from "@/components/ui/Dropdown";
 import styles from "./Sidebar.module.scss";
+import SlackAccountModal from "./SlackAccountModal";
 
 interface SidebarProps {
   activeView: ViewMode;
@@ -28,8 +30,8 @@ const NAV_ITEMS: { label: string; view: ViewMode; icon: React.ReactNode }[] = [
     ),
   },
   {
-    view: "by-user",
-    label: "By User",
+    view: "by-employee",
+    label: "By Employee",
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -56,12 +58,21 @@ const NAV_ITEMS: { label: string; view: ViewMode; icon: React.ReactNode }[] = [
 export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
   const { user } = useAuthStore();
   const router = useRouter();
+  const [openSlackModal, setOpenSlackModal] = useState(false);
 
   const dropdownItems = [
     {
       label: "My Profile",
       onClick: () => {
         window.open(process.env.NEXT_PUBLIC_EMPLOYEE_PROFILE, "_blank");
+      },
+    },
+    {
+      label: user?.result?.slackId
+        ? `Slack Linked`
+        : "Link to Slack",
+      onClick: () => {
+        setOpenSlackModal(true);
       },
     },
     {
@@ -87,14 +98,20 @@ export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
         {user && (
           <Dropdown
             trigger={
-              <div className={styles.avatar} title={user.fullName}>
-                {getInitials(user.fullName)}
+              <div className={styles.avatar} title={user.result.fullName}>
+                {getInitials(user.result.fullName)}
               </div>
             }
             items={dropdownItems}
             align="right"
           />
         )}
+        <SlackAccountModal
+          open={openSlackModal}
+          onClose={() => setOpenSlackModal(false)}
+          slackId={user?.result?.slackId}
+          slackEmail={user?.result?.slackEmail}
+        />
       </div>
 
       <nav className={styles.nav}>

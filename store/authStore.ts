@@ -1,11 +1,11 @@
 "use client";
 
 import { create } from "zustand";
-import { AuthUser } from "@/types";
+import { AuthEmployee } from "@/types";
 
 interface AuthState {
-  user: AuthUser | null;
-  setUser: (user: AuthUser | null) => void;
+  user: AuthEmployee | null;
+  setUser: (user: AuthEmployee | null) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({

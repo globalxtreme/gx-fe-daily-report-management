@@ -13,7 +13,7 @@ interface TopbarProps {
 
 const VIEW_TITLES: Record<ViewMode, string> = {
   all: "All Reports",
-  "by-user": "By User",
+  "by-employee": "By Employee",
   "by-date": "By Date",
 };
 

@@ -1,16 +1,22 @@
 .card {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-4);
+
   width: 100%;
   padding: var(--space-4) var(--space-5);
+
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+
   text-align: left;
   cursor: pointer;
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast),
+
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
     background var(--transition-fast);
 
   &:hover {
@@ -22,14 +28,6 @@
   &:active {
     transform: scale(0.995);
   }
-}
-
-.left {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  min-width: 0;
-  flex: 1;
 }
 
 .avatar {
@@ -89,13 +87,6 @@
   text-overflow: ellipsis;
 }
 
-.right {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  flex-shrink: 0;
-}
-
 .date {
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
@@ -105,4 +96,26 @@
 .chevron {
   color: var(--color-text-muted);
   flex-shrink: 0;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  flex: 1;
+}
+
+.middle {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
 }
