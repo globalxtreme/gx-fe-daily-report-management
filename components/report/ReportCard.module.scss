@@ -2,8 +2,6 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: var(--space-4);
-
   width: 100%;
   padding: var(--space-4) var(--space-5);
 
@@ -46,8 +44,9 @@
 }
 
 .info {
-  min-width: 0;
   flex: 1;
+  min-width: 0;
+  max-width: clamp(300px, 50%, 600px);
 }
 
 .nameRow {
@@ -80,8 +79,6 @@
 }
 
 .preview {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -102,8 +99,12 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  min-width: 0;
+
   flex: 1;
+  min-width: 0;
+
+  /* Reserve space for the centered date */
+  padding-right: 220px;
 }
 
 .middle {
@@ -111,6 +112,7 @@
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
+  pointer-events: none;
 }
 
 .right {
@@ -118,4 +120,5 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  z-index: 1;
 }

@@ -84,7 +84,7 @@ export default function ReportUpdateModal({
           {reportExists &&(
             <>
             <div className={styles.field}>
-              <label>What did you do yesterday?<span className={styles.required}>*</span></label>
+              <label>What did you complete yesterday?<span className={styles.required}>*</span></label>
 
               <textarea
                 required
@@ -97,7 +97,7 @@ export default function ReportUpdateModal({
             </div>
 
             <div className={styles.field}>
-              <label>What will you work on today?<span className={styles.required}>*</span></label>
+              <label>What will you do today?<span className={styles.required}>*</span></label>
 
               <textarea
                 required
@@ -110,7 +110,7 @@ export default function ReportUpdateModal({
             </div>
 
             <div className={styles.field}>
-              <label>When do you expect to finish?<span className={styles.required}>*</span></label>
+              <label>When will you be finished with that?<span className={styles.required}>*</span></label>
               <input
                 required
                 value={form.finishEstimation}
@@ -121,7 +121,7 @@ export default function ReportUpdateModal({
             </div>
 
             <div className={styles.field}>
-              <label>Any blockers or impediments?<span className={styles.required}>*</span></label>
+              <label>Anything blocking your progress?<span className={styles.required}>*</span></label>
 
               <textarea
                 required
@@ -134,7 +134,7 @@ export default function ReportUpdateModal({
             </div>
 
             <div className={styles.field}>
-              <label>How are you feeling today?<span className={styles.required}>*</span></label>
+              <label>How do you feel today?<span className={styles.required}>*</span></label>
               <input
                 required
                 value={emojify(form.mood)}
@@ -165,6 +165,7 @@ export default function ReportUpdateModal({
                 if (updated) {
                   toast.success("Daily report updated successfully.");
                   onSubmit();
+                  onClose();
                 }
               } catch (err) {
                 toast.error("Failed to update daily report.");
